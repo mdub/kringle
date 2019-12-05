@@ -59,12 +59,12 @@ Clamp do
   subcommand "adults", "generate ring of adults" do
 
     def execute
-      order = nil
+      ring = nil
       loop do
-        order = adults.shuffle
-        break if order_is_okay(order)
+        ring = adults.shuffle
+        break if order_is_okay(ring)
       end
-      order.each do |person|
+      ring.each do |person|
         puts person.name
       end
     end    
