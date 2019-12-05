@@ -1,0 +1,85 @@
+#! /usr/bin/env ruby
+
+require 'clamp'
+require 'dry-struct'
+require 'dry-types'
+
+module Types
+  include Dry.Types()
+end
+
+class Family < Dry::Struct
+  transform_keys(&:to_sym)
+  attribute :adults, Types::Array.of(Types::Strict::String)
+  attribute :kids, Types::Array.of(Types::Strict::String).default([].freeze)
+
+  def members
+    adults + kids
+  end
+end
+
+class Person < Dry::Struct
+  attribute :name, Types::Strict::String
+  attribute :type, Types::Strict::Symbol
+  attribute :family, Types::Strict::Integer
+end
+
+FAMILIES = [
+  {
+    adults: %w(Roland Sandra)
+  },
+  {
+    adults: %w(Mike Tanya),
+    kids: %w(Ngara Jonah),
+  },
+  {
+    adults: %w(Hamish Michelle Maddy Caity),
+  },
+  {
+    adults: %w(Tamas Rachel),
+    kids: %w(Josh Bailey Jayde Courtney)
+  }
+].map(&Family.method(:new))
+
+PEOPLE = FAMILIES.each_with_index.map do |family, i|
+  family.adults.map { |m| Person.new(name: m, family: i, type: :adult) } +
+  family.kids.map { |m| Person.new(name: m, family: i, type: :child) }
+end.flatten
+
+Clamp do
+
+  subcommand "everyone", "show everyone" do
+    def execute
+      PEOPLE.each do |person|
+        p person
+      end
+    end
+  end
+  
+  subcommand "adults", "generate ring of adults" do
+
+    def execute
+      order = nil
+      loop do
+        order = adults.shuffle
+        break if order_is_okay(order)
+      end
+      order.each do |person|
+        puts person.name
+      end
+    end    
+  
+    def adults 
+      PEOPLE.select { |p| p.type == :adult }
+    end
+
+    def order_is_okay(people)
+      0.upto(people.size - 1).all? do |i|
+        j = (i + 1) % people.size
+        people[i].family != people[j].family
+      end
+    end
+  
+  end
+
+end
