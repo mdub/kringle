@@ -59,25 +59,26 @@ Clamp do
   subcommand "adults", "generate ring of adults" do
 
     def execute
-      ring = nil
-      loop do
-        ring = adults.shuffle
-        break if order_is_okay(ring)
-      end
-      ring.each do |person|
-        puts person.name
+      pairs = generate_pairs
+      pairs.each do |a,b|
+        puts "#{a.name} for #{b.name}"
       end
     end    
   
+    def generate_pairs
+      loop do
+        ring = adults.shuffle
+        pairs = ring.zip(ring.rotate(1))
+        return pairs if pairs.all? { |a,b| pair_okay?(a,b) }
+      end
+    end
+
     def adults 
       PEOPLE.select { |p| p.type == :adult }
     end
 
-    def order_is_okay(people)
-      0.upto(people.size - 1).all? do |i|
-        j = (i + 1) % people.size
-        people[i].family != people[j].family
-      end
+    def pair_okay?(a, b)
+      a.family != b.family
     end
   
   end
