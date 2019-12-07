@@ -33,6 +33,9 @@ FAMILIES = [
     kids: %w(Ngara Jonah),
   },
   {
+    adults: %w(Nigel)
+  },
+  {
     adults: %w(Hamish Michelle Maddy Caity),
   },
   {
@@ -78,7 +81,15 @@ Clamp do
     end
 
     def pair_okay?(a, b)
-      a.family != b.family
+      return false if a.family == b.family
+      names = [a.name, b.name]
+      knows_nigel = %w(Mike Tanya Roland Sandra)
+      if names.include?("Nigel") 
+        return false unless knows_nigel.any? do |p|
+          names.include?(p)
+        end
+      end
+      true
     end
   
   end
