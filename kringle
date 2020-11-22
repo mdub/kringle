@@ -29,18 +29,13 @@ FAMILIES = [
     adults: %w(Roland Sandra)
   },
   {
-    adults: %w(Mike Tanya),
-    kids: %w(Ngara Jonah),
-  },
-  {
-    adults: %w(Nigel)
+    adults: %w(Mike Tanya Ngara Jonah)
   },
   {
     adults: %w(Hamish Michelle Maddy Caity),
   },
   {
-    adults: %w(Tamas Rachel),
-    kids: %w(Josh Bailey Jayde Courtney)
+    adults: %w(Tamas Rachel Josh Bailey Jayde Courtney)
   }
 ].map(&Family.method(:new))
 
@@ -64,7 +59,7 @@ Clamp do
     def execute
       pairs = generate_pairs
       pairs.each do |a,b|
-        puts "#{a.name} for #{b.name}"
+        puts "#{a.name} buys for #{b.name}"
       end
     end    
   
